@@ -1,6 +1,6 @@
 -- original installer can look in https://github.com/IgorTimofeev/MineOS/blob/master/Installer/Main.lua
 local component = require("component")
-local filesystem = require("filesystem")
+local fs = require("filesystem")
 
 local function getComponentAddress(name)
     return component.list(name)() or error("Required " .. name .. " component is missing")
@@ -65,16 +65,16 @@ local function request(url)
 end
 
 local function download(url, path)
-    filesystem.makeDirectory(filesystemPath(path))
+    fs.makeDirectory(filesystemPath(path))
 
-    local fileHandle, reason = filesystem.open(path, "wb")
+    local fileHandle, reason = fs.open(path, "wb")
 
     if fileHandle then
         rawRequest(url, function(chunk)
-            filesystem.write(fileHandle, chunk)
+            fs.write(fileHandle, chunk)
         end)
 
-        filesystem.close(fileHandle)
+        fs.close(fileHandle)
     else
         error("File opening failed: " .. tostring(reason))
     end
@@ -90,8 +90,8 @@ local function deserialize(text)
 end
 
 
-if filesystem.exists(applicationFolder) then
-    filesystem.remove(applicationFolder)
+if fs.exists(applicationFolder) then
+    fs.remove(applicationFolder)
 end
 
 
