@@ -89,6 +89,8 @@ local function deserialize(text)
     end
 end
 
+filesystem.remove(applicationFolder)
+
 local files = deserialize(request(installerURL .. "Files.cfg"))
 
 for i = 1, #files do
