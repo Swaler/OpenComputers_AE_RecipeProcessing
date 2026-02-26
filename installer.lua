@@ -70,10 +70,10 @@ local function download(url, path)
 
     if fileHandle then
         rawRequest(url, function(chunk)
-            filesystem.write(fileHandle, chunk)
+            fileHandle:write(chunk)
         end)
 
-        filesystem.close(fileHandle)
+        fileHandle:close()
     else
         error("File opening failed: " .. tostring(reason))
     end
