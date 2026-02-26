@@ -6,7 +6,7 @@ end
 
 local internetAddress = getComponentAddress("internet")
 
-local repositoryURL = "https://github.com/Swaler/OpenComputers_AE_RecipeProcessing/blob/main/"
+local repositoryURL = "https://raw.githubusercontent.com/Swaler/OpenComputers_AE_RecipeProcessing/main/"
 local installerURL = "Installer/"
 
 local temporaryFilesystemProxy, selectedFilesystemProxy
