@@ -5,19 +5,29 @@ local function getComponentAddress(name)
     return component.list(name)() or error("Required " .. name .. " component is missing")
 end
 
-local internetAddress = getComponentAddress("internet")
+local internet = getComponentAddress("internet")
+local filesystem = getComponentAddress("filesystem")
 
 local repositoryURL = "https://raw.githubusercontent.com/Swaler/OpenComputers_AE_RecipeProcessing/main/"
 local installerURL = "Installer/"
 
-local temporaryFilesystemProxy, selectedFilesystemProxy
+local sourceURL = "src/"
+local applicationFolder = "/home/AE_RecipeProcessing/"
+
+local function filesystemPath(path)
+    return path:match("^(.+%/).") or ""
+end
+
+local function filesystemName(path)
+    return path:match("%/?([^%/]+%/?)$")
+end
 
 local function filesystemHideExtension(path)
     return path:match("(.+)%..+") or path
 end
 
 local function rawRequest(url, chunkHandler)
-    local internetHandle, reason = component.invoke(internetAddress, "request",
+    local internetHandle, reason = component.invoke(internet, "request",
         repositoryURL .. url:gsub("([^%w%-%_%.%~])", function(char)
             return string.format("%%%02X", string.byte(char))
         end))
@@ -55,15 +65,16 @@ local function request(url)
 end
 
 local function download(url, path)
-    selectedFilesystemProxy.makeDirectory(filesystemPath(path))
+    filesystem.makeDirectory(filesystemPath(path))
 
-    local fileHandle, reason = selectedFilesystemProxy.open(path, "wb")
+    local fileHandle, reason = filesystem.open(path, "wb")
+
     if fileHandle then
         rawRequest(url, function(chunk)
-            selectedFilesystemProxy.write(fileHandle, chunk)
+            filesystem.write(fileHandle, chunk)
         end)
 
-        selectedFilesystemProxy.close(fileHandle)
+        filesystem.close(fileHandle)
     else
         error("File opening failed: " .. tostring(reason))
     end
@@ -79,4 +90,7 @@ local function deserialize(text)
 end
 
 local files = deserialize(request(installerURL .. "Files.cfg"))
-print(files.text)
+
+for i = 1, #files do
+    download(sourceURL .. files[i], applicationFolder .. files[i])
+end
