@@ -1,12 +1,12 @@
 -- original installer can look in https://github.com/IgorTimofeev/MineOS/blob/master/Installer/Main.lua
 local component = require("component")
+local filesystem = require("filesystem")
 
 local function getComponentAddress(name)
     return component.list(name)() or error("Required " .. name .. " component is missing")
 end
 
 local internet = getComponentAddress("internet")
-local filesystem = getComponentAddress("filesystem")
 
 local repositoryURL = "https://raw.githubusercontent.com/Swaler/OpenComputers_AE_RecipeProcessing/main/"
 local installerURL = "Installer/"
