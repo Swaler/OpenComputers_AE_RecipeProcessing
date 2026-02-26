@@ -89,7 +89,11 @@ local function deserialize(text)
     end
 end
 
-filesystem.remove(applicationFolder)
+
+if filesystem.exists(applicationFolder) then
+    filesystem.remove(applicationFolder)
+end
+
 
 local files = deserialize(request(installerURL .. "Files.cfg"))
 
