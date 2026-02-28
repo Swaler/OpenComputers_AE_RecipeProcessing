@@ -80,7 +80,13 @@ function Recipe:isFailed()
 end
 
 function Recipe:canStart()
-    if self._is_invalid or self._ae2_pattern == nil then
+    if self._is_invalid then
+        print("1")
+        return false
+    end
+
+    if self._ae2_pattern == nil then
+        print("2")
         return false
     end
 
