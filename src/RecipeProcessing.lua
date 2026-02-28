@@ -6,6 +6,7 @@ local ColouredText = require("Utils.ColouredText")
 local TIME_UPDATE_FINISHED_CPUS = 1
 local TIME_START_RECIPE = 1
 
+
 ---@class RecipeProcessing
 ---@field private _recipes Recipe[]
 ---@field private _await_recipes int[]
@@ -48,13 +49,13 @@ end
 function RecipeProcessing:loadRecipe(config)
     for _, recipe_data in pairs(config) do
         local recipe = Recipe.new(
-            recipe_data.name,
+            recipe_data.item_id,
             recipe_data.min,
             recipe_data.batch)
 
         if recipe:isInvalid() then
             print(ColouredText.red("Не удалось загрузить рецепт <" ..
-                recipe_data.name .. "> по причине: " .. recipe.invalid_reason))
+                recipe_data.item_id .. "> по причине: " .. recipe.invalid_reason))
         else
             recipe.user_data = recipe_data
             table.insert(self._recipes, recipe)

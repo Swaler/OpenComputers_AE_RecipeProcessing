@@ -5,15 +5,26 @@ AE2Utils = {}
 ---
 ---Возвращает паттерн, который зарегистрирован в ME сети
 ---
----@param item_name string идентификатор предмета
+---@param item_id string идентификатор предмета
 ---@return AE2Pattern | nil
-function AE2Utils.findPattern(item_name)
-    for _, v in pairs(component.me_controller.getCraftables()) do
-        local item = v.getItemStack()
-        local recipe_item_name = AE2Utils.getItemName(item)
+function AE2Utils.findPattern(item_id)
+    for _, recipe in pairs(component.me_controller.getCraftables()) do
+        local item = recipe.getItemStack()
 
-        if recipe_item_name == item_name then
-            return v
+        if AE2Utils.getItemName(item) == item_id then
+            return recipe
+        end
+    end
+
+    return nil
+end
+
+---@param item_id string идентификатор предмета
+---@return AE2Item | nil
+function AE2Utils.findStoredItem(item_id)
+    for _, item in pairs(component.me_controller.getItemsInNetwork()) do
+        if AE2Utils.getItemName(item) == item_id then
+            return item
         end
     end
 

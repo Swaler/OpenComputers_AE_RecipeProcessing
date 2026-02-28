@@ -1,6 +1,8 @@
 local AE2Utils = require("Utils.AE2Utils")
 
+
 ---@class Recipe
+---@field private _item_id string
 ---@field private _recipe_name string
 ---@field private _is_invalid boolean
 ---@field private _start_batch integer
@@ -13,13 +15,15 @@ Recipe = {}
 Recipe.__index = Recipe
 
 
----@param item_name string идентификатор рецепта, по которому будет искаться зарегистрированный рецепт в ME сети
+---@param item_id string идентификатор предмета, по которому будет искаться зарегистрированный рецепт в ME сети
 ---@param min integer Минимальное кол-во предмета в сети, если <= 0 то ограничения нет
 ---@param start_batch integer сколько нужно заказывать у ME сети
-function Recipe.new(item_name, min, start_batch)
+function Recipe.new(item_id, min, start_batch)
     local obj = setmetatable({}, Recipe)
 
-    obj._ae2_pattern = AE2Utils.findPattern(item_name)
+    obj._item_id = item_id
+    obj._ae2_pattern = AE2Utils.findPattern(item_id)
+    obj._ae2_item = nil
     obj.invalid_reason = ""
     obj._start_batch = start_batch
     obj._request_status = nil
@@ -35,6 +39,15 @@ function Recipe.new(item_name, min, start_batch)
     end
 
     return obj
+end
+
+---@return AE2Item | nil
+function Recipe:getStoredItem()
+    if self._ae2_item == nil then
+        self._ae2_item = AE2Utils.findStoredItem(self._item_id)
+    end
+
+    return self._ae2_item
 end
 
 function Recipe:isLiquid()
@@ -87,9 +100,12 @@ function Recipe:canStart()
         return false
     end
 
-    local current_size = self._ae2_pattern.getItemStack().size
-    print(current_size)
-    return current_size < self._min
+    if self._min <= 0 then
+        return true
+    end
+
+    local item = self:getStoredItem()
+    return item == nil or item.size < self._min
 end
 
 function Recipe:start()
