@@ -53,6 +53,10 @@ local function main()
     local app = Application.new()
 
     app:init()
+
+    print(ColouredText.yellow("Нажмите любую клавишу что бы продолжить..."))
+    event.pull("key_down")
+
     app:run()
 end
 

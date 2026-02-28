@@ -2,7 +2,7 @@ config = {
     -- -- Формиат натрия
     -- { item_id = "sodium formate",          min = 0, batch = 1 },
     -- Соляная кислота
-    { item_id = "hydrochloricacid_gt5u",   min = 50000, batch = 10 },
+    { item_id = "hydrochloricacid_gt5u",   min = 50 * 1000, batch = 10 * 1000 },
     -- -- Угарный газ
     -- { item_id = "carbonmonoxide",          min = 0, batch = 1 },
     -- -- Аммиак

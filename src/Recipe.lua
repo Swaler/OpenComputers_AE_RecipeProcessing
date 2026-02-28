@@ -41,13 +41,9 @@ function Recipe.new(item_id, min, start_batch)
     return obj
 end
 
----@return AE2Item | nil
-function Recipe:getStoredItem()
-    if self._ae2_item == nil then
-        self._ae2_item = AE2Utils.findStoredItem(self._item_id)
-    end
-
-    return self._ae2_item
+---@return string
+function Recipe:getItemId()
+    return self._item_id
 end
 
 function Recipe:isLiquid()
@@ -104,7 +100,7 @@ function Recipe:canStart()
         return true
     end
 
-    local item = self:getStoredItem()
+    local item = AE2Utils.findStoredItem(self._item_id)
     return item == nil or item.size < self._min
 end
 
