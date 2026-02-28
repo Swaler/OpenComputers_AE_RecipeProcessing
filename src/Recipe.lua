@@ -84,11 +84,11 @@ function Recipe:canStart()
         return false
     end
 
-    return not Recipe:isProcessing()
+    return not self:isProcessing()
 end
 
 function Recipe:start()
-    if Recipe:canStart() then
+    if self:canStart() then
         self._request_status = self._ae2_pattern.request(self._start_batch)
 
         return not self._request_status.hasFailed()
