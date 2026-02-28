@@ -16,7 +16,7 @@ config = {
     -- Хлорид аммония
     { item_id = "ammonium chloride",       min = 5 * 1000 * 1000, batch = 100 * 1000 },
     -- Пыль гидроксида натрия
-    { item_id = "gregtech:gt.metaitem.01", min = 5 * 1000 * 1000, batch = 100 * 1000 },
+    { item_id = "gregtech:gt.metaitem.01", min = 5 * 100 * 1000, batch = 64 * 5 },
 }
 
 return config
