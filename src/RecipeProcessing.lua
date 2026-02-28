@@ -63,11 +63,13 @@ function RecipeProcessing:loadRecipe(config)
             table.insert(self._await_recipes, #self._recipes)
 
             print(
-                ColouredText.green("Загружен рецепт: ") ..
-                recipe_data.item_id ..
-                " " .. ColouredText.cyan(recipe:getLabel()) ..
-                " min:" .. ColouredText.cyan(recipe_data.min) ..
-                " batch:" .. ColouredText.cyan(recipe_data.batch))
+                ColouredText.green("Загружен рецепт: "),
+                recipe_data.item_id,
+                ColouredText.cyan(recipe:getLabel()),
+                "damage: ", recipe_data.damage,
+                "min:", ColouredText.cyan(recipe_data.min),
+                "batch:", ColouredText.cyan(recipe_data.batch)
+            )
         end
     end
 end
