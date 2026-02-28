@@ -9,7 +9,6 @@ local RecipeProcessing = require("RecipeProcessing")
 ---@class Application
 ---@field private _recipe_processing RecipeProcessing
 ---@field private _last_time number
----@field private _update_timer number | nil
 Application = {}
 Application.__index = Application
 
@@ -17,7 +16,6 @@ function Application.new()
     local app = setmetatable({}, Application)
     app._recipe_processing = RecipeProcessing.new()
     app._last_time = computer.uptime()
-    app._update_timer = nil
     return app
 end
 
@@ -25,52 +23,36 @@ function Application:init()
     self._recipe_processing:init(config)
 end
 
-function Application:isRunning()
-    return self._update_timer ~= nil
-end
-
 function Application:run()
-    if self:isRunning() then
-        return
-    end
+    local is_running = true
 
-    self._update_timer = event.timer(0.1, function()
+    event.listen("interrupted", function()
+        is_running = false
+    end)
+
+    while is_running do
         local currentTime = computer.uptime()
         local dt = currentTime - self._last_time
         self._last_time = currentTime
 
-        self._recipe_processing:update(dt)
-    end)
-end
+        local success, err = pcall(function()
+            self._recipe_processing:update(dt)
+        end)
 
-function Application:stop()
-    if self:isRunning() then
-        event.cancel(self._update_timer)
-        self._update_timer = nil
+        if not success then
+            print(err)
+            break
+        end
+
+        os.sleep(0.1)
     end
-end
-
-function Application:pause()
-    print("Press any key to continue...\n")
-    event.pull("key_down")
 end
 
 local function main()
     local app = Application.new()
 
-    event.listen("interrupted", app:stop())
-
-    local success, err = pcall(function()
-        app:init()
-        app:run()
-    end)
-
-    if not success then
-        print(err)
-    end
-
-    app:stop()
-    event.ignore("interrupted", app:stop())
+    app:init()
+    app:run()
 end
 
 main()

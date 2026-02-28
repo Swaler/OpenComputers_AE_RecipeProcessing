@@ -34,6 +34,8 @@ function RecipeProcessing:init(config)
         return
     end
 
+    print("Доступных процессоров: " .. #component.me_controller.getCpus())
+
     local busy_count = AE2Utils.BusyCpuCount()
 
     if busy_count > 0 then
@@ -75,7 +77,10 @@ function RecipeProcessing:canRecipeProcessing(delta_time)
 
         if self._time >= TIME_UPDATE_FINISHED_CPUS then
             local busy_count = AE2Utils.BusyCpuCount()
-            self._await_finished_recipes = busy_count > 0
+
+            if busy_count == 0 then
+                self._await_finished_recipes = false
+            end
 
             if self._await_finished_recipes then
                 print("Кол-во занятых процессоров: " .. busy_count)
@@ -96,7 +101,7 @@ function RecipeProcessing:updateProcessingRecipe()
         local recipe = self._recipes[recipe_index]
         local remove_from_processing = not recipe or recipe:isFailed()
 
-        if not recipe then
+        if recipe == nil then
             print("Recipe is nill ...")
             table.remove(self._processing_recipes, i)
             return
@@ -131,7 +136,11 @@ end
 
 function RecipeProcessing:updateAwaitingRecipe(delta_time)
     local cpus = component.me_controller.getCpus()
-    if #self._processing_recipes >= #cpus then return end
+
+    if #self._processing_recipes >= #cpus then
+        print("#self._processing_recipes >= #cpus")
+        return
+    end
 
     self._time = self._time + delta_time
 
@@ -143,7 +152,7 @@ function RecipeProcessing:updateAwaitingRecipe(delta_time)
         local recipe_index = self._await_recipes[i]
         local recipe = self._recipes[recipe_index]
 
-        if not recipe then
+        if recipe == nil then
             print("Recipe is nill ...")
             table.remove(self._await_recipes, i)
             return
