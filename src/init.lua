@@ -2,27 +2,34 @@ package.path = package.path .. ";/home/AE_RecipeProcessing/?.lua"
 
 
 local event = require("event")
+local computer = require("computer")
 local config = require("config")
 local RecipeProcessing = require("RecipeProcessing")
 
 ---@class Application
----@field recipe_processing RecipeProcessing
+---@field private _recipe_processing RecipeProcessing
+---@field private _last_time number
 Application = {}
 Application.__index = Application
 
 function Application.new()
     local app = setmetatable({}, Application)
-    app.recipe_processing = RecipeProcessing.new()
+    app._recipe_processing = RecipeProcessing.new()
+    app._last_time = computer.uptime()
     return app
 end
 
 function Application:init()
-    self.recipe_processing:loadRecipes(config)
+    self._recipe_processing:init(config)
 end
 
 function Application:run()
     while true do
-        self.recipe_processing:update()
+        local currentTime = computer.uptime()
+        local dt = currentTime - self._last_time
+        self._last_time = currentTime
+
+        self._recipe_processing:update(dt)
     end
 end
 

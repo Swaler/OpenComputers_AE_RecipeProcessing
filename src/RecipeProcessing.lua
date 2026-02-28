@@ -1,40 +1,161 @@
 local component = require("component")
 local Recipe = require("Recipe")
+local AE2Utils = require("Utils.AE2Utils")
+
+local TIME_UPDATE_FINISHED_CPUS = 10
+local TIME_START_RECIPE = 1
 
 ---@class RecipeProcessing
----@field recipes Recipe[]
----@field cpus any
+---@field private _recipes Recipe[]
+---@field private _await_recipes int[]
+---@field private _processing_recipes int[]
+---@field private _await_finished_recipes boolean
+---@field private _time number
 RecipeProcessing = {}
 RecipeProcessing.__index = RecipeProcessing
 
 function RecipeProcessing.new()
     local obj = setmetatable({}, RecipeProcessing)
 
-    obj.recipes = {}
-    obj.cpus = component.me_controller.getCpus()
-
-    print("Кол-во доступных процессоров: " .. #obj.cpus .. "\n")
+    obj._recipes = {}
+    obj._await_recipes = {}
+    obj._processing_recipes = {}
+    obj._await_finished_recipes = true
+    obj._time = 0
 
     return obj
 end
 
-function RecipeProcessing:loadRecipes(config)
-    for _, recipe_data in pairs(config) do
-        local recipe = Recipe.new(recipe_data.name, recipe_data.batch)
+function RecipeProcessing:init(config)
+    self:loadRecipe(config)
 
-        if recipe.status == RecipeStatus.AWAIT then
-            recipe.user_data = recipe_data
-            table.insert(self.recipes, recipe)
-            print("Загружен рецепт: " .. recipe_data.name)
-        else
-            print("Не удалось загрузить рецепт <" .. recipe_data.name .. "> по причине: " .. recipe.invalid_reason)
-        end
-        
+    if #self._recipes == 0 then
+        print("Нет ни одного рецепта для обработки")
+        return
+    end
+
+    local busy_count = AE2Utils.BusyCpuCount()
+
+    if busy_count > 0 then
+        print("Для начала обработки рецептов требуется что бы все процессоры завершили рецепты!")
+        print("Кол-во занятых процессоров: " .. busy_count)
     end
 end
 
-function RecipeProcessing:update()
+function RecipeProcessing:loadRecipe(config)
+    for _, recipe_data in pairs(config) do
+        local recipe = Recipe.new(recipe_data.name, recipe_data.batch)
 
+        if recipe:isInvalid() then
+            print("Не удалось загрузить рецепт <" .. recipe_data.name .. "> по причине: " .. recipe.invalid_reason)
+        else
+            recipe.user_data = recipe_data
+            table.insert(self._recipes, recipe)
+            table.insert(self._await_recipes, #self._recipes)
+
+            print("Загружен рецепт: " .. recipe_data.name)
+        end
+    end
+end
+
+function RecipeProcessing:update(delta_time)
+    if self:canRecipeProcessing(delta_time) then
+        self:updateProcessingRecipe()
+        self:updateAwaitingRecipe(delta_time)
+    end
+end
+
+function RecipeProcessing:canRecipeProcessing(delta_time)
+    if #self._recipes == 0 then
+        return false
+    end
+
+    if self._await_finished_recipes then
+        self._time = self._time + delta_time
+
+        if self._time >= TIME_UPDATE_FINISHED_CPUS then
+            local busy_count = AE2Utils.BusyCpuCount()
+            self._await_finished_recipes = busy_count > 0
+
+            if self._await_finished_recipes then
+                print("Кол-во занятых процессоров: " .. busy_count)
+            end
+
+            self._time = 0
+        end
+    end
+
+    return not self._await_finished_recipes
+end
+
+function RecipeProcessing:updateProcessingRecipe()
+    if #self._processing_recipes == 0 then return end
+
+    for i = #self._processing_recipes, 1, -1 do
+        local recipe_index = self._processing_recipes[i]
+        local recipe = self._recipes[recipe_index]
+        local remove_from_processing = not recipe or recipe:isFailed()
+
+        if not recipe then
+            print("Recipe is nill ...")
+            table.remove(self._processing_recipes, i)
+            return
+        end
+
+        if recipe:isFailed() then
+            print("Произошла ошибка при старте рецепта: " .. recipe:getLabel())
+
+            if recipe._request_status then
+                for key, value in pairs(recipe._request_status) do
+                    print(key, value)
+                end
+            end
+        elseif recipe:isFinished() then
+            remove_from_processing = not recipe:start()
+
+            if recipe:isFailed() then
+                if recipe._request_status then
+                    for key, value in pairs(recipe._request_status) do
+                        print(key, value)
+                    end
+                end
+            end
+        end
+
+        if remove_from_processing then
+            table.remove(self._processing_recipes, i)
+            table.insert(self._await_recipes, recipe_index)
+        end
+    end
+end
+
+function RecipeProcessing:updateAwaitingRecipe(delta_time)
+    local cpus = component.me_controller.getCpus()
+    if #self._processing_recipes >= #cpus then return end
+
+    self._time = self._time + delta_time
+
+    if self._time < TIME_START_RECIPE then return end
+
+    for i = #self._await_recipes, 1, -1 do
+        local recipe_index = self._await_recipes[i]
+        local recipe = self._recipes[recipe_index]
+
+        if not recipe then
+            print("Recipe is nill ...")
+            table.remove(self._await_recipes, i)
+            return
+        end
+
+        local remove_from_await = recipe:start()
+
+        if remove_from_await then
+            table.remove(self._await_recipes, i)
+            table.insert(self._processing_recipes, recipe_index)
+        end
+    end
+
+    self._time = 0
 end
 
 return RecipeProcessing

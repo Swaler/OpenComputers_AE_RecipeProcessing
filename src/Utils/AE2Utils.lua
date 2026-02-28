@@ -36,4 +36,18 @@ function AE2Utils.getItemName(item)
     return ""
 end
 
+---@return integer
+function AE2Utils.BusyCpuCount()
+    local cpus = component.me_controller.getCpus()
+    local count = 0
+
+    for i = 1, #cpus do
+        if cpus[i].busy then
+            count = count + 1
+        end
+    end
+
+    return count
+end
+
 return AE2Utils
