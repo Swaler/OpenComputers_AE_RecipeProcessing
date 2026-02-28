@@ -114,7 +114,10 @@ function RecipeProcessing:updateProcessingRecipe()
         -- else
         if recipe:isFinished() then
             remove_from_processing = not recipe:start()
-            print(ColouredText.cyan("Перезапускаем рецепт: ") .. recipe:getLabel())
+
+            if not remove_from_processing then
+                print(ColouredText.cyan("Перезапускаем рецепт: ") .. recipe:getLabel())
+            end
         end
 
         if remove_from_processing then
