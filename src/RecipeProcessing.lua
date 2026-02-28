@@ -50,7 +50,8 @@ function RecipeProcessing:loadRecipe(config)
         local recipe = Recipe.new(recipe_data.name, recipe_data.batch)
 
         if recipe:isInvalid() then
-            print(ColouredText.red("Не удалось загрузить рецепт <" .. recipe_data.name .. "> по причине: " .. recipe.invalid_reason))
+            print(ColouredText.red("Не удалось загрузить рецепт <" ..
+            recipe_data.name .. "> по причине: " .. recipe.invalid_reason))
         else
             recipe.user_data = recipe_data
             table.insert(self._recipes, recipe)
@@ -108,24 +109,12 @@ function RecipeProcessing:updateProcessingRecipe()
             return
         end
 
-        if recipe:isFailed() then
-            print(ColouredText.red("Произошла ошибка при старте рецепта: ") .. recipe:getLabel())
-
-            if recipe._request_status ~= nil then
-                for key, value in pairs(recipe._request_status) do
-                    print(key, value)
-                end
-            end
-        elseif recipe:isFinished() then
+        -- if recipe:isFailed() then
+        --     print(ColouredText.red("Произошла ошибка при старте рецепта: ") .. recipe:getLabel())
+        -- else
+        if recipe:isFinished() then
             remove_from_processing = not recipe:start()
-
-            if recipe:isFailed() then
-                if recipe._request_status ~= nil then
-                    for key, value in pairs(recipe._request_status) do
-                        print(key, value)
-                    end
-                end
-            end
+            print(ColouredText.cyan("Перезапускаем рецепт: ") .. recipe:getLabel())
         end
 
         if remove_from_processing then
@@ -164,12 +153,6 @@ function RecipeProcessing:updateAwaitingRecipe(delta_time)
             table.insert(self._processing_recipes, recipe_index)
         else
             print(ColouredText.yellow("Не удалось запустить рецепт: ") .. recipe:getLabel())
-
-            if recipe._request_status ~= nil then
-                for key, value in pairs(recipe._request_status) do
-                    print(key, value)
-                end
-            end
         end
     end
 
