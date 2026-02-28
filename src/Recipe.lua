@@ -43,7 +43,7 @@ function Recipe:getName()
 end
 
 function Recipe:getLabel()
-    if not self._ae2_pattern then
+    if self._ae2_pattern == nil then
         return ""
     end
 

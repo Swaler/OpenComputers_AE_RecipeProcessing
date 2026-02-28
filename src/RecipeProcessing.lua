@@ -137,6 +137,8 @@ function RecipeProcessing:updateAwaitingRecipe(delta_time)
 
     if self._time < TIME_START_RECIPE then return end
 
+    print("Пробуем запустить рецепты...")
+
     for i = #self._await_recipes, 1, -1 do
         local recipe_index = self._await_recipes[i]
         local recipe = self._recipes[recipe_index]
@@ -150,6 +152,7 @@ function RecipeProcessing:updateAwaitingRecipe(delta_time)
         local remove_from_await = recipe:start()
 
         if remove_from_await then
+            print("Рецепт запущен: " .. recipe:getLabel())
             table.remove(self._await_recipes, i)
             table.insert(self._processing_recipes, recipe_index)
         end
