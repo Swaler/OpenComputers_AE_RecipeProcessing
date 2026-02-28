@@ -4,7 +4,7 @@ local AE2Utils = require("Utils.AE2Utils")
 local ColouredText = require("Utils.ColouredText")
 
 local TIME_UPDATE_FINISHED_CPUS = 1
-local TIME_START_RECIPE = 1
+local TIME_START_RECIPE = 10
 
 
 ---@class RecipeProcessing
@@ -36,13 +36,13 @@ function RecipeProcessing:init(config)
         return
     end
 
-    print(ColouredText.cyan("Доступных процессоров: ") .. #component.me_controller.getCpus())
+    print(ColouredText.green("Доступных процессоров: ") .. #component.me_controller.getCpus())
 
     local busy_count = AE2Utils.BusyCpuCount()
 
     if busy_count > 0 then
         print(ColouredText.orange("Для начала обработки рецептов требуется что бы все процессоры завершили рецепты!"))
-        print(ColouredText.cyan("Кол-во занятых процессоров: ") .. busy_count)
+        print(ColouredText.green("Кол-во занятых процессоров: ") .. busy_count)
     end
 end
 
@@ -61,7 +61,7 @@ function RecipeProcessing:loadRecipe(config)
             table.insert(self._recipes, recipe)
             table.insert(self._await_recipes, #self._recipes)
 
-            print(ColouredText.cyan("Загружен рецепт: ") .. recipe_data.item_id .. " " .. recipe:getLabel())
+            print(ColouredText.green("Загружен рецепт: ") .. recipe_data.item_id .. " " .. recipe:getLabel())
         end
     end
 end
@@ -89,7 +89,7 @@ function RecipeProcessing:canRecipeProcessing(delta_time)
             end
 
             if self._await_finished_recipes then
-                print(ColouredText.cyan("Кол-во занятых процессоров: ") .. busy_count)
+                print(ColouredText.green("Кол-во занятых процессоров: ") .. busy_count)
             end
 
             self._time = 0
@@ -115,7 +115,7 @@ function RecipeProcessing:updateProcessingRecipe()
 
         if recipe:isFinished() and recipe:start() then
             remove_from_processing = false
-            print(ColouredText.cyan("Перезапускаем рецепт: ") .. recipe:getLabel())
+            print(ColouredText.green("Перезапускаем рецепт: ") .. recipe:getLabel())
         end
 
         if remove_from_processing then
@@ -149,7 +149,7 @@ function RecipeProcessing:updateAwaitingRecipe(delta_time)
         local remove_from_await = recipe:start()
 
         if remove_from_await then
-            print(ColouredText.cyan("Рецепт запущен: ") .. recipe:getLabel())
+            print(ColouredText.green("Рецепт запущен: ") .. recipe:getLabel())
             table.remove(self._await_recipes, i)
             table.insert(self._processing_recipes, recipe_index)
         else
