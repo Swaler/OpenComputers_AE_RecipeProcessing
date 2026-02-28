@@ -1,7 +1,5 @@
-local folderOfThisFile = (...):match("(.-)[^%.]+$")
-
 local component = require("component")
-local Recipe = require(folderOfThisFile .. "Recipe")
+local Recipe = require(".Recipe")
 
 ---@class RecipeProcessing
 ---@field recipes Recipe[]

@@ -1,6 +1,4 @@
-local folderOfThisFile = (...):match("(.-)[^%.]+$")
-
-local AE2Utils = require(folderOfThisFile .. "Utils.AE2Utils")
+local AE2Utils = require(".Utils.AE2Utils")
 
 ---@enum RecipeStatus
 RecipeStatus = {
