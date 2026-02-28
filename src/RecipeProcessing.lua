@@ -163,7 +163,7 @@ function RecipeProcessing:updateAwaitingRecipe(delta_time)
             table.remove(self._await_recipes, i)
             table.insert(self._processing_recipes, recipe_index)
         else
-            print(ColouredText.orange("Не удалось запустить рецепт: ") .. recipe:getLabel())
+            print(ColouredText.yellow("Не удалось запустить рецепт: ") .. recipe:getLabel())
 
             if recipe._request_status ~= nil then
                 for key, value in pairs(recipe._request_status) do
