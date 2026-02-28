@@ -53,7 +53,7 @@ function RecipeProcessing:loadRecipe(config)
             table.insert(self._recipes, recipe)
             table.insert(self._await_recipes, #self._recipes)
 
-            print("Загружен рецепт: " .. recipe_data.name)
+            print("Загружен рецепт: " .. recipe_data.name .. " " .. recipe:getLabel())
         end
     end
 end
