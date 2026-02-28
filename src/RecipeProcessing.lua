@@ -47,7 +47,10 @@ end
 
 function RecipeProcessing:loadRecipe(config)
     for _, recipe_data in pairs(config) do
-        local recipe = Recipe.new(recipe_data.name, recipe_data.batch)
+        local recipe = Recipe.new(
+            recipe_data.name,
+            recipe_data.min,
+            recipe_data.batch)
 
         if recipe:isInvalid() then
             print(ColouredText.red("Не удалось загрузить рецепт <" ..

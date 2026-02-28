@@ -6,22 +6,25 @@ local AE2Utils = require("Utils.AE2Utils")
 ---@field private _start_batch integer
 ---@field private _request_status AE2CraftingStatus | nil
 ---@field private _ae2_pattern AE2Pattern | nil
+---@field private _min integer
 ---@field invalid_reason string
----@field user_data table | nil
+---@field user_data any
 Recipe = {}
 Recipe.__index = Recipe
 
 
----@param recipe_name string идентификатор рецепта, по которому будет искаться зарегистрированный рецепт в ME сети
+---@param item_name string идентификатор рецепта, по которому будет искаться зарегистрированный рецепт в ME сети
+---@param min integer Минимальное кол-во предмета в сети, если <= 0 то ограничения нет
 ---@param start_batch integer сколько нужно заказывать у ME сети
-function Recipe.new(recipe_name, start_batch)
+function Recipe.new(item_name, min, start_batch)
     local obj = setmetatable({}, Recipe)
 
-    obj._ae2_pattern = AE2Utils.findPattern(recipe_name)
+    obj._ae2_pattern = AE2Utils.findPattern(item_name)
     obj.invalid_reason = ""
     obj._start_batch = start_batch
     obj._request_status = nil
     obj._is_invalid = false
+    obj._min = min
 
     if obj._start_batch <= 0 then
         obj._is_invalid = true
@@ -80,11 +83,13 @@ function Recipe:isFailed()
 end
 
 function Recipe:canStart()
-    if self._is_invalid or self._ae2_pattern == nil then
+    if self._is_invalid or self._ae2_pattern == nil or self:isProcessing() then
         return false
     end
 
-    return not self:isProcessing()
+    local current_size = self._ae2_pattern.getItemStack().size
+    print(current_size)
+    return current_size < self._min
 end
 
 function Recipe:start()
