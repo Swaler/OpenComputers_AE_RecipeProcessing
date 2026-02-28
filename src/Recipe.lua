@@ -104,11 +104,6 @@ function Recipe:canStart()
     end
 
     local item = AE2Utils.findStoredItem(self._item_id, self._damage)
-
-    if self._item_id == "gregtech:gt.metaitem.01" and item ~= nil then
-        print(item.size, self._min)
-    end
-
     return item == nil or item.size < self._min
 end
 
