@@ -1,8 +1,9 @@
 local component = require("component")
 local Recipe = require("Recipe")
 local AE2Utils = require("Utils.AE2Utils")
+local color = require("Utils.ColouredText")
 
-local TIME_UPDATE_FINISHED_CPUS = 10
+local TIME_UPDATE_FINISHED_CPUS = 1
 local TIME_START_RECIPE = 1
 
 ---@class RecipeProcessing
@@ -39,7 +40,7 @@ function RecipeProcessing:init(config)
     local busy_count = AE2Utils.BusyCpuCount()
 
     if busy_count > 0 then
-        print("Для начала обработки рецептов требуется что бы все процессоры завершили рецепты!")
+        print(color.orange("Для начала обработки рецептов требуется что бы все процессоры завершили рецепты!"))
         print("Кол-во занятых процессоров: " .. busy_count)
     end
 end
@@ -49,7 +50,7 @@ function RecipeProcessing:loadRecipe(config)
         local recipe = Recipe.new(recipe_data.name, recipe_data.batch)
 
         if recipe:isInvalid() then
-            print("Не удалось загрузить рецепт <" .. recipe_data.name .. "> по причине: " .. recipe.invalid_reason)
+            print(color.red("Не удалось загрузить рецепт <" .. recipe_data.name .. "> по причине: " .. recipe.invalid_reason))
         else
             recipe.user_data = recipe_data
             table.insert(self._recipes, recipe)
@@ -102,15 +103,15 @@ function RecipeProcessing:updateProcessingRecipe()
         local remove_from_processing = not recipe or recipe:isFailed()
 
         if recipe == nil then
-            print("Recipe is nill ...")
+            print(color.red("Recipe is nill ..."))
             table.remove(self._processing_recipes, i)
             return
         end
 
         if recipe:isFailed() then
-            print("Произошла ошибка при старте рецепта: " .. recipe:getLabel())
+            print(color.red("Произошла ошибка при старте рецепта: ") .. recipe:getLabel())
 
-            if recipe._request_status then
+            if recipe._request_status ~= nil then
                 for key, value in pairs(recipe._request_status) do
                     print(key, value)
                 end
@@ -119,7 +120,7 @@ function RecipeProcessing:updateProcessingRecipe()
             remove_from_processing = not recipe:start()
 
             if recipe:isFailed() then
-                if recipe._request_status then
+                if recipe._request_status ~= nil then
                     for key, value in pairs(recipe._request_status) do
                         print(key, value)
                     end
@@ -146,8 +147,6 @@ function RecipeProcessing:updateAwaitingRecipe(delta_time)
 
     if self._time < TIME_START_RECIPE then return end
 
-    print("Пробуем запустить рецепты...")
-
     for i = #self._await_recipes, 1, -1 do
         local recipe_index = self._await_recipes[i]
         local recipe = self._recipes[recipe_index]
@@ -164,6 +163,14 @@ function RecipeProcessing:updateAwaitingRecipe(delta_time)
             print("Рецепт запущен: " .. recipe:getLabel())
             table.remove(self._await_recipes, i)
             table.insert(self._processing_recipes, recipe_index)
+        else
+            print("Не удалось запустить рецепт: " .. recipe:getLabel())
+
+            if recipe._request_status ~= nil then
+                for key, value in pairs(recipe._request_status) do
+                    print(key, value)
+                end
+            end
         end
     end
 

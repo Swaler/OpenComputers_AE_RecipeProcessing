@@ -80,16 +80,15 @@ function Recipe:isFailed()
 end
 
 function Recipe:canStart()
-    if self._is_invalid or not self._ae2_pattern then
+    if self._is_invalid or self._ae2_pattern == nil then
         return false
     end
 
-    return self._start_batch > 0 and not Recipe:isProcessing()
+    return not Recipe:isProcessing()
 end
 
 function Recipe:start()
     if Recipe:canStart() then
-        ---@diagnostic disable-next-line: need-check-nil
         self._request_status = self._ae2_pattern.request(self._start_batch)
 
         return not self._request_status.hasFailed()
