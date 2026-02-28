@@ -31,17 +31,17 @@ function RecipeProcessing:init(config)
     self:loadRecipe(config)
 
     if #self._recipes == 0 then
-        print("Нет ни одного рецепта для обработки")
+        print(ColouredText.red("Нет ни одного рецепта для обработки"))
         return
     end
 
-    print("Доступных процессоров: " .. #component.me_controller.getCpus())
+    print(ColouredText.cyan("Доступных процессоров: ") .. #component.me_controller.getCpus())
 
     local busy_count = AE2Utils.BusyCpuCount()
 
     if busy_count > 0 then
         print(ColouredText.orange("Для начала обработки рецептов требуется что бы все процессоры завершили рецепты!"))
-        print("Кол-во занятых процессоров: " .. busy_count)
+        print(ColouredText.cyan("Кол-во занятых процессоров: ") .. busy_count)
     end
 end
 
@@ -84,7 +84,7 @@ function RecipeProcessing:canRecipeProcessing(delta_time)
             end
 
             if self._await_finished_recipes then
-                print("Кол-во занятых процессоров: " .. busy_count)
+                print(ColouredText.cyan("Кол-во занятых процессоров: ") .. busy_count)
             end
 
             self._time = 0

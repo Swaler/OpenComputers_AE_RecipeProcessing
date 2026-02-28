@@ -5,6 +5,7 @@ local event = require("event")
 local computer = require("computer")
 local config = require("config")
 local RecipeProcessing = require("RecipeProcessing")
+local ColouredText = require("Utils.ColouredText")
 
 ---@class Application
 ---@field private _recipe_processing RecipeProcessing
@@ -40,7 +41,7 @@ function Application:run()
         end)
 
         if not success then
-            print(err)
+            print(ColouredText.red(err))
             break
         end
 
