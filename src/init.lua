@@ -42,7 +42,7 @@ local function main()
     local app = Application.new()
 
     app:init()
-    app:pause()
+    app:run()
 end
 
 main()
