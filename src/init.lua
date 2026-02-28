@@ -30,6 +30,7 @@ function Application:run()
         self._last_time = currentTime
 
         self._recipe_processing:update(dt)
+        os.sleep(0.05)
     end
 end
 
