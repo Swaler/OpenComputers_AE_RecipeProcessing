@@ -81,6 +81,7 @@ end
 
 function Recipe:canStart()
     if self._is_invalid or self._ae2_pattern == nil then
+        print("1")
         return false
     end
 
@@ -89,6 +90,7 @@ end
 
 function Recipe:start()
     if Recipe:canStart() then
+        print("2")
         self._request_status = self._ae2_pattern.request(self._start_batch)
 
         return not self._request_status.hasFailed()

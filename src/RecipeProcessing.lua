@@ -139,7 +139,6 @@ function RecipeProcessing:updateAwaitingRecipe(delta_time)
     local cpus = component.me_controller.getCpus()
 
     if #self._processing_recipes >= #cpus then
-        print("#self._processing_recipes >= #cpus")
         return
     end
 
@@ -152,7 +151,7 @@ function RecipeProcessing:updateAwaitingRecipe(delta_time)
         local recipe = self._recipes[recipe_index]
 
         if recipe == nil then
-            print("Recipe is nill ...")
+            print(color.red("Recipe is nill ..."))
             table.remove(self._await_recipes, i)
             return
         end
@@ -160,11 +159,11 @@ function RecipeProcessing:updateAwaitingRecipe(delta_time)
         local remove_from_await = recipe:start()
 
         if remove_from_await then
-            print("Рецепт запущен: " .. recipe:getLabel())
+            print(color.cyan("Рецепт запущен: ") .. recipe:getLabel())
             table.remove(self._await_recipes, i)
             table.insert(self._processing_recipes, recipe_index)
         else
-            print("Не удалось запустить рецепт: " .. recipe:getLabel())
+            print(color.orange("Не удалось запустить рецепт: ") .. recipe:getLabel())
 
             if recipe._request_status ~= nil then
                 for key, value in pairs(recipe._request_status) do
