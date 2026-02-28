@@ -6,12 +6,13 @@ AE2Utils = {}
 ---Возвращает паттерн, который зарегистрирован в ME сети
 ---
 ---@param item_id string идентификатор предмета
+---@param damage? number
 ---@return AE2Pattern | nil
-function AE2Utils.findPattern(item_id)
+function AE2Utils.findPattern(item_id, damage)
     for _, recipe in pairs(component.me_controller.getCraftables()) do
         local item = recipe.getItemStack()
 
-        if AE2Utils.getItemName(item) == item_id then
+        if (damage == nil or item.damage == damage) and AE2Utils.getItemName(item) == item_id then
             return recipe
         end
     end
@@ -20,10 +21,11 @@ function AE2Utils.findPattern(item_id)
 end
 
 ---@param item_id string идентификатор предмета
+---@param damage? number
 ---@return AE2Item | nil
-function AE2Utils.findStoredItem(item_id)
+function AE2Utils.findStoredItem(item_id, damage)
     for _, item in pairs(component.me_controller.getItemsInNetwork()) do
-        if AE2Utils.getItemName(item) == item_id then
+        if (damage == nil or item.damage == damage) and AE2Utils.getItemName(item) == item_id then
             return item
         end
     end
