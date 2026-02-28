@@ -64,9 +64,9 @@ function RecipeProcessing:loadRecipe(config)
             print(
                 ColouredText.green("Загружен рецепт: ") ..
                 recipe_data.item_id ..
-                " " .. recipe:getLabel() ..
-                " min:" .. recipe_data.min ..
-                " batch:" .. recipe_data.batch)
+                " " .. ColouredText.cyan(recipe:getLabel()) ..
+                " min:" .. ColouredText.cyan(recipe_data.min) ..
+                " batch:" .. ColouredText.cyan(recipe_data.batch))
         end
     end
 end
