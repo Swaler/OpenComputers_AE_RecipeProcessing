@@ -13,7 +13,7 @@ function RecipeProcessing.new()
     obj.recipes = {}
     obj.cpus = component.me_controller.getCpus()
 
-    print("Available number of cpu: " .. #obj.cpus .. "\n")
+    print("Кол-во доступных процессоров: " .. #obj.cpus .. "\n")
 
     return obj
 end
@@ -21,9 +21,15 @@ end
 function RecipeProcessing:loadRecipes(config)
     for _, recipe_data in pairs(config) do
         local recipe = Recipe.new(recipe_data.name, recipe_data.batch)
-        recipe.user_data = recipe_data
 
-        table.insert(self.recipes, recipe)
+        if recipe.status == RecipeStatus.AWAIT then
+            recipe.user_data = recipe_data
+            table.insert(self.recipes, recipe)
+            print("Загружен рецепт: " .. recipe_data.name)
+        else
+            print("Не удалось загрузить рецепт <" .. recipe_data.name .. "> по причине: " .. recipe.invalid_reason)
+        end
+        
     end
 end
 

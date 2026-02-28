@@ -38,7 +38,7 @@ function Recipe.new(recipe_name, start_batch)
         obj.invalid_reason = "batch <= 0"
     elseif obj.ae2_pattern == nil then
         obj.status = RecipeStatus.INVALID
-        obj.invalid_reason = "Couldn't find the recipe"
+        obj.invalid_reason = "Не удалось найти рецепт"
     end
 
     return obj
