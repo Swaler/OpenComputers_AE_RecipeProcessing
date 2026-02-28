@@ -1,5 +1,6 @@
 -- original installer can look in https://github.com/IgorTimofeev/MineOS/blob/master/Installer/Main.lua
 local component = require("component")
+local filesystem = require("filesystem")
 
 local function getComponentAddress(name)
     return component.list(name)() or error("Required " .. name .. " component is missing")
