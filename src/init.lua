@@ -1,6 +1,8 @@
+local folderOfThisFile = (...):match("(.-)[^%.]+$")
+
 local event = require("event")
-local config = require("config")
-local RecipeProcessing = require("RecipeProcessing")
+local config = require(folderOfThisFile .. "config")
+local RecipeProcessing = require(folderOfThisFile .. "RecipeProcessing")
 
 ---@class Application
 ---@field recipe_processing RecipeProcessing
