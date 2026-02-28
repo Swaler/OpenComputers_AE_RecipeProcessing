@@ -18,7 +18,8 @@ Recipe.__index = Recipe
 ---@param item_id string идентификатор предмета, по которому будет искаться зарегистрированный рецепт в ME сети
 ---@param min integer Минимальное кол-во предмета в сети, если <= 0 то ограничения нет
 ---@param start_batch integer сколько нужно заказывать у ME сети
-function Recipe.new(item_id, min, start_batch)
+---@param damage? number ХЗ что это
+function Recipe.new(item_id, min, start_batch, damage)
     local obj = setmetatable({}, Recipe)
 
     obj._item_id = item_id

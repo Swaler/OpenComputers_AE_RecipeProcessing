@@ -51,7 +51,8 @@ function RecipeProcessing:loadRecipe(config)
         local recipe = Recipe.new(
             recipe_data.item_id,
             recipe_data.min,
-            recipe_data.batch)
+            recipe_data.batch,
+            recipe_data.damage)
 
         if recipe:isInvalid() then
             print(ColouredText.red("Не удалось загрузить рецепт <" ..
