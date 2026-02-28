@@ -51,7 +51,7 @@ function RecipeProcessing:loadRecipe(config)
 
         if recipe:isInvalid() then
             print(ColouredText.red("Не удалось загрузить рецепт <" ..
-            recipe_data.name .. "> по причине: " .. recipe.invalid_reason))
+                recipe_data.name .. "> по причине: " .. recipe.invalid_reason))
         else
             recipe.user_data = recipe_data
             table.insert(self._recipes, recipe)
@@ -109,15 +109,9 @@ function RecipeProcessing:updateProcessingRecipe()
             return
         end
 
-        -- if recipe:isFailed() then
-        --     print(ColouredText.red("Произошла ошибка при старте рецепта: ") .. recipe:getLabel())
-        -- else
-        if recipe:isFinished() then
-            remove_from_processing = not recipe:start()
-
-            if not remove_from_processing then
-                print(ColouredText.cyan("Перезапускаем рецепт: ") .. recipe:getLabel())
-            end
+        if recipe:isFinished() and recipe:start() then
+            remove_from_processing = false
+            print(ColouredText.cyan("Перезапускаем рецепт: ") .. recipe:getLabel())
         end
 
         if remove_from_processing then
