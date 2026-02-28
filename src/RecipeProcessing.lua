@@ -1,5 +1,5 @@
 local component = require("component")
-local Recipe = require(".Recipe")
+local Recipe = require("Recipe")
 
 ---@class RecipeProcessing
 ---@field recipes Recipe[]

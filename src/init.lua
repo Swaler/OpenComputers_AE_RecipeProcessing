@@ -1,6 +1,9 @@
+package.path = package.path .. ";/home/AE_RecipeProcessing/?.lua"
+
+
 local event = require("event")
-local config = require(".config")
-local RecipeProcessing = require(".RecipeProcessing")
+local config = require("config")
+local RecipeProcessing = require("RecipeProcessing")
 
 ---@class Application
 ---@field recipe_processing RecipeProcessing

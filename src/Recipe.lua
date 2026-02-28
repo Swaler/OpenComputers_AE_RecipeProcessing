@@ -1,4 +1,4 @@
-local AE2Utils = require(".Utils.AE2Utils")
+local AE2Utils = require("Utils.AE2Utils")
 
 ---@enum RecipeStatus
 RecipeStatus = {
