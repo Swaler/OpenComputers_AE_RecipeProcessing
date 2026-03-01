@@ -47,6 +47,12 @@ config = {
         min = 5 * 1000 * 1000,
         batch = 100 * 1000
     },
+    -- Сернистое каменноугольное минеральное масло
+    {
+        item_id = "fluid.sulfuriccoaltaroil",
+        min = -1,
+        batch = 1000
+    },
     -- Пыль гидроксида натрия
     {
         item_id = "gregtech:gt.metaitem.01",
