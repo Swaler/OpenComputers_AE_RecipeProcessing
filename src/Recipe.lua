@@ -58,12 +58,7 @@ function Recipe:getName()
 end
 
 function Recipe:getLabel()
-    if self._ae2_pattern == nil then
-        return ""
-    end
-
-    local item = self._ae2_pattern.getItemStack()
-    return (self:isLiquid() and item.fluidDrop) and item.fluidDrop.label or item.label
+    return self._ae2_pattern ~= nil and AE2Utils.getItemLabel(self._ae2_pattern.getItemStack())
 end
 
 function Recipe:isInvalid()

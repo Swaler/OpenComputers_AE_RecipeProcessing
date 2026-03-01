@@ -49,6 +49,18 @@ function AE2Utils.getItemName(item)
     return ""
 end
 
+-- В зависимости от того какой тип рецепта добавляется таблица fluidDrop,
+-- где находится действительная информация о рецепте,
+---@param item AE2Item | nil
+function AE2Utils.getItemLabel(item)
+    if item then
+        return (AE2Utils.isLiquidItem(item) and item.fluidDrop) and item.fluidDrop.label or item.label
+    end
+
+    return ""
+end
+
+
 ---@return integer
 function AE2Utils.BusyCpuCount()
     local cpus = component.me_controller.getCpus()
