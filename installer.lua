@@ -8,7 +8,7 @@ end
 
 local internet = getComponentAddress("internet")
 
-local repositoryURL = "https://raw.githubusercontent.com/Swaler/OpenComputers_AE_RecipeProcessing/main/"
+local repositoryURL = "https://raw.githubusercontent.com/Swaler/OpenComputers_AE_RecipeProcessing/dev/"
 local installerURL = "Installer/"
 
 local sourceURL = "src/"
