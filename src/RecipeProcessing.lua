@@ -41,7 +41,7 @@ function RecipeProcessing:init(config)
     local busy_count = AE2Utils.BusyCpuCount()
 
     if busy_count > 0 then
-        print(ColouredText.orange("Для начала обработки рецептов требуется что бы все процессоры завершили рецепты!"))
+        print(ColouredText.yellow("Для начала обработки рецептов требуется что бы все процессоры завершили рецепты!"))
         print(ColouredText.green("Кол-во занятых процессоров: ") .. busy_count)
     end
 end
